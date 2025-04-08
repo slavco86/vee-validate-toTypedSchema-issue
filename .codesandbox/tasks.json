@@ -11,7 +11,7 @@ p{
   "tasks": {
     "dev": {
       "name": "dev",
-      "command": "vite",
+      "command": "npm run dev",
       "runAtStart": true
     },
     "build": {
