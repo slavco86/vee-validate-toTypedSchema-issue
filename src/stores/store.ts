@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { useForm } from 'vee-validate'
+import { toTypedSchema } from '@vee-validate/yup'
 import * as yup from 'yup'
 import { PhoneNumberUtil } from 'google-libphonenumber'
 import { sectionThreeSchema } from '@/schemas'
@@ -75,7 +76,7 @@ export const useStore = defineStore('store', () => {
     setTouched: sectionOneSetTouched,
     meta: sectionOneMeta,
   } = useForm({
-    validationSchema: sectionOneSchema,
+    validationSchema: toTypedSchema(sectionOneSchema),
     keepValuesOnUnmount: true,
   })
 
