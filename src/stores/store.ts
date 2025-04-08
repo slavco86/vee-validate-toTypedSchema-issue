@@ -32,28 +32,30 @@ const phoneNumber = yup
   .label('Phone number')
 
 const sectionOneSchema = yup.object({
-  firstName: yup
-    .string()
-    .when('zipCode', {
-      // This is how we can achieve conditional rules in yup
-      // We refer to another field schema and use isValidSync,
-      // which return boolean. When true - then callback result
-      // will be added to this field's schema. In other word, we
-      // add required() and min() rules only when zipCode is valid
-      // Otherwise, firstName is not required
-      is: (val: string) => zipCode.isValidSync(val),
-      then: (schema) => schema.required().min(2),
-      otherwise: (schema) => schema.optional(),
-    })
-    .label('First name'),
-  lastName: yup
-    .string()
-    .when('zipCode', {
-      is: (val: string) => zipCode.isValidSync(val),
-      then: (schema) => schema.required().min(2),
-      otherwise: (schema) => schema.optional(),
-    })
-    .label('Last name'),
+  nested: yup.object({
+    firstName: yup
+      .string()
+      .when('$zipCode', {
+        // This is how we can achieve conditional rules in yup
+        // We refer to another field schema and use isValidSync,
+        // which return boolean. When true - then callback result
+        // will be added to this field's schema. In other word, we
+        // add required() and min() rules only when zipCode is valid
+        // Otherwise, firstName is not required
+        is: (val: string) => zipCode.isValidSync(val),
+        then: (schema) => schema.required().min(2),
+        otherwise: (schema) => schema.optional(),
+      })
+      .label('First name'),
+    lastName: yup
+      .string()
+      .when('$zipCode', {
+        is: (val: string) => zipCode.isValidSync(val),
+        then: (schema) => schema.required().min(2),
+        otherwise: (schema) => schema.optional(),
+      })
+      .label('Last name'),
+  }),
   zipCode,
 })
 
@@ -110,11 +112,11 @@ export const useStore = defineStore('store', () => {
   // because we want lazy validation, and we need to pass through
   // all the state, so we can interrogate thing like validated
   // status for each field
-  const [firstName, firstNameProps] = sectionOneDefineField('firstName', {
+  const [firstName, firstNameProps] = sectionOneDefineField('nested.firstName', {
     validateOnModelUpdate: false,
     props: (state) => state,
   })
-  const [lastName, lastNameProps] = sectionOneDefineField('lastName', {
+  const [lastName, lastNameProps] = sectionOneDefineField('nested.lastName', {
     validateOnModelUpdate: false,
     props: (state) => state,
   })
